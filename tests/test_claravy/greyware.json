@@ -1,0 +1,280 @@
+[
+    {
+        "input": {
+            "sha256": "011f480386df9169dd3d2afdce035c27cfe008b29da49fcd87b543ddbe1c6d5d",
+            "sha1": "3715ad008f1f573691b110b4aa8178f112f627ed",
+            "md5": "cb327e327196d5f49e711a4d8df07dbc",
+            "temp_submission_data": {
+                "virus_scan_vt3_files": [
+                    {
+                        "type": "file",
+                        "attributes": {
+                            "sha256": "011f480386df9169dd3d2afdce035c27cfe008b29da49fcd87b543ddbe1c6d5d",
+                            "sha1": "3715ad008f1f573691b110b4aa8178f112f627ed",
+                            "md5": "cb327e327196d5f49e711a4d8df07dbc",
+                            "last_analysis_results": {
+                                "AhnLab": {
+                                    "method": "blacklist",
+                                    "engine_name": "AhnLab",
+                                    "engine_version": "2.0.0.1",
+                                    "engine_update": "20250205",
+                                    "result": "V3 - Adware/Win32.OneStep"
+                                },
+                                "AntiVir": {
+                                    "method": "blacklist",
+                                    "engine_name": "AntiVir",
+                                    "engine_version": "2.0.0.1",
+                                    "engine_update": "20250205",
+                                    "result": "TR/ATRAPS.Gen"
+                                },
+                                "Antiy": {
+                                    "method": "blacklist",
+                                    "engine_name": "Antiy",
+                                    "engine_version": "2.0.0.1",
+                                    "engine_update": "20250205",
+                                    "result": "AVL - AdWare/Win32.OneStep.gen"
+                                },
+                                "Avast": {
+                                    "method": "blacklist",
+                                    "engine_name": "Avast",
+                                    "engine_version": "2.0.0.1",
+                                    "engine_update": "20250205",
+                                    "result": "Win32:OneStep-AH [PUP]"
+                                },
+                                "AVG": {
+                                    "method": "blacklist",
+                                    "engine_name": "AVG",
+                                    "engine_version": "2.0.0.1",
+                                    "engine_update": "20250205",
+                                    "result": "Generic_r.YV"
+                                },
+                                "BitDefender": {
+                                    "method": "blacklist",
+                                    "engine_name": "BitDefender",
+                                    "engine_version": "2.0.0.1",
+                                    "engine_update": "20250205",
+                                    "result": "Adware.OneStep.H"
+                                },
+                                "ClamAV": {
+                                    "method": "blacklist",
+                                    "engine_name": "ClamAV",
+                                    "engine_version": "2.0.0.1",
+                                    "engine_update": "20250205",
+                                    "result": "Adware.Onestep-12"
+                                },
+                                "Commtouch": {
+                                    "method": "blacklist",
+                                    "engine_name": "Commtouch",
+                                    "engine_version": "2.0.0.1",
+                                    "engine_update": "20250205",
+                                    "result": "W32/Backdoor2.DXAZ"
+                                },
+                                "Comodo": {
+                                    "method": "blacklist",
+                                    "engine_name": "Comodo",
+                                    "engine_version": "2.0.0.1",
+                                    "engine_update": "20250205",
+                                    "result": "ApplicUnwnt.Win32.Adware.OneStep.~C"
+                                },
+                                "DrWeb": {
+                                    "method": "blacklist",
+                                    "engine_name": "DrWeb",
+                                    "engine_version": "2.0.0.1",
+                                    "engine_update": "20250205",
+                                    "result": "Adware.OneStep.77"
+                                },
+                                "Emsisoft": {
+                                    "method": "blacklist",
+                                    "engine_name": "Emsisoft",
+                                    "engine_version": "2.0.0.1",
+                                    "engine_update": "20250205",
+                                    "result": "Virus.Win32.AdWare!IK"
+                                },
+                                "ESET": {
+                                    "method": "blacklist",
+                                    "engine_name": "ESET",
+                                    "engine_version": "2.0.0.1",
+                                    "engine_update": "20250205",
+                                    "result": "NOD32 - A Variant Of Win32/Adware.OneStep"
+                                },
+                                "F": {
+                                    "method": "blacklist",
+                                    "engine_name": "F",
+                                    "engine_version": "2.0.0.1",
+                                    "engine_update": "20250205",
+                                    "result": "Prot - W32/Backdoor2.DXAZ"
+                                },
+                                "Fortinet": {
+                                    "method": "blacklist",
+                                    "engine_name": "Fortinet",
+                                    "engine_version": "2.0.0.1",
+                                    "engine_update": "20250205",
+                                    "result": "Adware/OneStep"
+                                },
+                                "GData": {
+                                    "method": "blacklist",
+                                    "engine_name": "GData",
+                                    "engine_version": "2.0.0.1",
+                                    "engine_update": "20250205",
+                                    "result": "Adware.OneStep.H"
+                                },
+                                "Ikarus": {
+                                    "method": "blacklist",
+                                    "engine_name": "Ikarus",
+                                    "engine_version": "2.0.0.1",
+                                    "engine_update": "20250205",
+                                    "result": "Virus.Win32.AdWare"
+                                },
+                                "Jiangmin": {
+                                    "method": "blacklist",
+                                    "engine_name": "Jiangmin",
+                                    "engine_version": "2.0.0.1",
+                                    "engine_update": "20250205",
+                                    "result": "Adware/OneStep.k"
+                                },
+                                "K7AntiVirus": {
+                                    "method": "blacklist",
+                                    "engine_name": "K7AntiVirus",
+                                    "engine_version": "2.0.0.1",
+                                    "engine_update": "20250205",
+                                    "result": "Backdoor"
+                                },
+                                "Kaspersky": {
+                                    "method": "blacklist",
+                                    "engine_name": "Kaspersky",
+                                    "engine_version": "2.0.0.1",
+                                    "engine_update": "20250205",
+                                    "result": "Not-a-virus:AdWare.Win32.OneStep.heur"
+                                },
+                                "McAfee": {
+                                    "method": "blacklist",
+                                    "engine_name": "McAfee",
+                                    "engine_version": "2.0.0.1",
+                                    "engine_update": "20250205",
+                                    "result": "GW-Edition - Heuristic.LooksLike.Win32.Suspicious.I"
+                                },
+                                "Microsoft": {
+                                    "method": "blacklist",
+                                    "engine_name": "Microsoft",
+                                    "engine_version": "2.0.0.1",
+                                    "engine_update": "20250205",
+                                    "result": "BrowserModifier:Win32/OneStepSearch"
+                                },
+                                "Norman": {
+                                    "method": "blacklist",
+                                    "engine_name": "Norman",
+                                    "engine_version": "2.0.0.1",
+                                    "engine_update": "20250205",
+                                    "result": "Onestep.A"
+                                },
+                                "nProtect": {
+                                    "method": "blacklist",
+                                    "engine_name": "nProtect",
+                                    "engine_version": "2.0.0.1",
+                                    "engine_update": "20250205",
+                                    "result": "Trojan-Clicker/W32.OneStep.4608.F"
+                                },
+                                "Panda": {
+                                    "method": "blacklist",
+                                    "engine_name": "Panda",
+                                    "engine_version": "2.0.0.1",
+                                    "engine_update": "20250205",
+                                    "result": "Adware/OneStep"
+                                },
+                                "PCTools": {
+                                    "method": "blacklist",
+                                    "engine_name": "PCTools",
+                                    "engine_version": "2.0.0.1",
+                                    "engine_update": "20250205",
+                                    "result": "46151"
+                                },
+                                "QuickHeal": {
+                                    "method": "blacklist",
+                                    "engine_name": "QuickHeal",
+                                    "engine_version": "2.0.0.1",
+                                    "engine_update": "20250205",
+                                    "result": "Adware.OneStep.a4"
+                                },
+                                "Rising": {
+                                    "method": "blacklist",
+                                    "engine_name": "Rising",
+                                    "engine_version": "2.0.0.1",
+                                    "engine_update": "20250205",
+                                    "result": "AdWare.Win32.Agent.dcs"
+                                },
+                                "Sophos": {
+                                    "method": "blacklist",
+                                    "engine_name": "Sophos",
+                                    "engine_version": "2.0.0.1",
+                                    "engine_update": "20250205",
+                                    "result": "OneStepSearch"
+                                },
+                                "SUPERAntiSpyware": {
+                                    "method": "blacklist",
+                                    "engine_name": "SUPERAntiSpyware",
+                                    "engine_version": "2.0.0.1",
+                                    "engine_update": "20250205",
+                                    "result": "Adware.OneStepSearch"
+                                },
+                                "Symantec": {
+                                    "method": "blacklist",
+                                    "engine_name": "Symantec",
+                                    "engine_version": "2.0.0.1",
+                                    "engine_update": "20250205",
+                                    "result": "Adware.OneStep"
+                                },
+                                "Trellix": {
+                                    "method": "blacklist",
+                                    "engine_name": "Trellix",
+                                    "engine_version": "2.0.0.1",
+                                    "engine_update": "20250205",
+                                    "result": "Generic PUP.x!hv"
+                                },
+                                "TrendMicro": {
+                                    "method": "blacklist",
+                                    "engine_name": "TrendMicro",
+                                    "engine_version": "2.0.0.1",
+                                    "engine_update": "20250205",
+                                    "result": "HouseCall - GRAY_Generic"
+                                },
+                                "VBA32": {
+                                    "method": "blacklist",
+                                    "engine_name": "VBA32",
+                                    "engine_version": "2.0.0.1",
+                                    "engine_update": "20250205",
+                                    "result": "AdWare.Win32.OneStep.mb"
+                                },
+                                "VirusBuster": {
+                                    "method": "blacklist",
+                                    "engine_name": "VirusBuster",
+                                    "engine_version": "2.0.0.1",
+                                    "engine_update": "20250205",
+                                    "result": "Adware.OneStep.Gen"
+                                },
+                                "WithSecure": {
+                                    "method": "blacklist",
+                                    "engine_name": "WithSecure",
+                                    "engine_version": "2.0.0.1",
+                                    "engine_update": "20250205",
+                                    "result": "Riskware:W32/OneStepSearch"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "virus_total_vt3_files": []
+            }
+        },
+        "output": {
+            "family": [
+                "onestep"
+            ],
+            "is_pup": true,
+            "tags": [
+                "BEH:adware"
+            ],
+            "aka": [],
+            "actors": []
+        }
+    }
+]

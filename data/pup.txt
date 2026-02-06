@@ -1,0 +1,5 @@
+beh:grayware
+beh:pup
+beh:pua
+beh:riskware
+beh:adware

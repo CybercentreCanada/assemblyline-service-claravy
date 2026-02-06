@@ -1,0 +1,24 @@
+{
+  "template": "https://github.com/CybercentreCanada/assemblyline-service-template.git",
+  "commit": "d60482c86248bd5a7dde061ea2a430ac169076cd",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "service_name": "claravy",
+      "__svc_name": "claravy",
+      "__repository": "assemblyline-service-claravy",
+      "__pkg_name": "claravy",
+      "class_name": "Claravy",
+      "short_description": "This service consumes Anti-Virus tags (`av.virus_name`) and extracts family, behavior, and platform information collected by [ClarAVy](https://github.com/FutureComputing4AI/ClarAVy).",
+      "short_description_fr": "",
+      "stage": "POST",
+      "category": "Antivirus",
+      "org_name_full": "CybercentreCanada",
+      "org_name_short": "cccs",
+      "license": "apache2",
+      "_template": "https://github.com/CybercentreCanada/assemblyline-service-template.git",
+      "_commit": "d60482c86248bd5a7dde061ea2a430ac169076cd"
+    }
+  },
+  "directory": null
+}
