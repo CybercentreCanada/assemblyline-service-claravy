@@ -1,0 +1,49 @@
+[project]
+name = "assemblyline-service-claravysvc"
+description = "This service consumes Anti-Virus tags (`av.virus_name`) and extracts family, behavior, and platform information collected by ClarAVy."
+readme = "README.md"
+requires-python = ">=3.10,<4"
+license = "Apache-2.0"
+authors = [{ name = "Cybercentre Canada" }]
+dynamic = ["version"]
+dependencies = [
+    "claravy @ git+https://github.com/CybercentreCanada/ClarAVy@7483e3a09aaa56886ee38debece11abbb7c9ec1b"
+]
+
+[tool.hatch.version]
+source = "env"
+variable = "version"
+
+[tool.hatch.metadata]
+# Required for ClarAVy dependency, which is not indexed on PyPI
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["claravy"]
+
+[tool.cruft]
+skip = ["pkglist.txt", "README.md", "claravy", "tests"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.format]
+docstring-code-format = true
+quote-style = "double"
+indent-style = "space"
+
+[tool.ruff.lint]
+# Add the `line-too-long` rule to the enforced rule set. By default, Ruff omits rules that
+# overlap with the use of a formatter, like Black, but we can override this behavior by
+# explicitly adding the rule.
+extend-select = ["E501", "D", "D404", "DOC"]
+ignore = ["D100", "D101", "D102", "D103", "D104", "D105", "D106", "D107"]
+preview = true
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[build-system]
+requires = ["hatchling >= 1.26"]
+build-backend = "hatchling.build"
