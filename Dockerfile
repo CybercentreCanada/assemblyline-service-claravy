@@ -14,8 +14,10 @@ RUN apt-get update && \
 
 COPY . .
 
-RUN pip wheel -w ./build .
-RUN cd ./build && rm assemblyline_service_claravysvc-*
+# ssdeep imports setuptools in a way that doesn't work with build isolation.
+RUN pip install cython wheel six cffi pybind11
+RUN pip wheel --no-build-isolation -w ./wheel-build .
+RUN cd ./wheel-build && rm assemblyline_service_claravysvc-*
 
 # Prepare runtime image
 FROM cccs/assemblyline-v4-service-base:$branch
@@ -46,13 +48,12 @@ RUN pip install \
 WORKDIR /opt/al_service
 COPY . .
 
-COPY --from=build /app/build ./build
-RUN pip install --no-cache-dir ./build/*.whl
-RUN pip install -e .
+COPY --from=build /app/wheel-build ./wheel-build
+RUN pip install --no-cache-dir ./wheel-build/*.whl
 
 # Patch version in manifest
 USER root
 RUN sed -i -e "s/\$SERVICE_TAG/$version/g" service_manifest.yml
-RUN rm -rf ./build/
+RUN rm -rf ./wheel-build
 
 USER assemblyline
