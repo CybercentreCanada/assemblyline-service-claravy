@@ -1,3 +1,5 @@
+"""A module to handle loading, saving and consolidating AV Knowledge (taxonomy , aliases, actors)."""
+
 import json
 import re
 from copy import deepcopy
@@ -15,6 +17,7 @@ AliasMap: TypeAlias = Dict[str, Dict[str, Set[str]]]
 class AvKnowledge(NamedTuple):
     taxonomy: Taxonomy
     aliases: AliasMap
+    pup_tags: Set[str]
 
 
 CLARAVY_TAGS = [
@@ -139,8 +142,6 @@ def _load_malpedia_alias(malpedia_families: str, malpedia_actors: str):
         actors = json.load(f_actors)
 
         for _, details in families.items():
-            # name = _clean_name(path.split(".")[1])
-
             name = _clean_name(details["common_name"])
 
             if "." in name:
@@ -205,8 +206,8 @@ def _sanitize_family_conflict_to_group(
         alias.pop(c)
 
     # Drop group alises that intersect family names
-    for alises in alias.values():
-        alises.difference_update(families)
+    for aliases in alias.values():
+        aliases.difference_update(families)
 
 
 def _sanitize_claravy(source: AvKnowledge) -> AvKnowledge:
@@ -225,7 +226,7 @@ def _sanitize_claravy(source: AvKnowledge) -> AvKnowledge:
         _sanitize_family_conflict_to_group(families, alias[tax.FAM], taxonomy[g], alias[g])
 
     # Malpedia will include alises in the common_name which can cause common_name to occur as both an alias and
-    # the taxonomy. ClarAVy does not support this, so we truncate alias values from the taxomony
+    # the taxonomy. ClarAVy does not support this, so we truncate alias values from the taxonomy
     for g, tokens in taxonomy.items():
         group_alias = reduce(lambda a, b: a | b, alias[g].values(), set())
 
@@ -234,7 +235,7 @@ def _sanitize_claravy(source: AvKnowledge) -> AvKnowledge:
         if redundant:
             tokens.difference_update(redundant)
 
-    return AvKnowledge(taxonomy, alias)
+    return AvKnowledge(taxonomy, alias, source.pup_tags)
 
 
 def _load_malpedia_taxonomy(malpedia_families: str, malpedia_actors: str):
@@ -262,32 +263,23 @@ def _load_malpedia_taxonomy(malpedia_families: str, malpedia_actors: str):
         return taxonomy
 
 
-def load_pup_index(file: str) -> Set[str]:
-    """Loads a PUP index of tags.
-
-    Loads a new-line delimited index of PUP tags.
-
-    Args:
-        file: The file containing PUP tags.
-
-    Returns:
-        A set of PUP tags.
-    """
+def _load_pup_index(file: str) -> Set[str]:
     with open(file, "r") as f:
-        return [line.strip().lower() for line in f if line.strip()]
+        return set([line.strip().lower() for line in f if line.strip()])
 
 
-def load_claravy(taxomony: str, alias: str) -> AvKnowledge:
+def load_claravy(taxonomy: str, alias: str, pup_index: str) -> AvKnowledge:
     """Loads ClarAVy taxonomy.
 
     Args:
-        taxomony: The file containing ClarAVy taxonomy.
+        taxonomy: The file containing ClarAVy taxonomy.
         alias: The file containing ClarAVy alias.
+        pup_index: Location of file containing tags that define pup.
 
     Returns:
         A knowledge object containing taxonomy and alias.
     """
-    return AvKnowledge(_load_claravy_taxonomy(taxomony), _load_claravy_alias(alias))
+    return AvKnowledge(_load_claravy_taxonomy(taxonomy), _load_claravy_alias(alias), _load_pup_index(pup_index))
 
 
 def load_malpedia(families: str, actors: str) -> AvKnowledge:
@@ -303,19 +295,19 @@ def load_malpedia(families: str, actors: str) -> AvKnowledge:
     taxonomy = _load_malpedia_taxonomy(families, actors)
     alias = _load_malpedia_alias(families, actors)
 
-    return _sanitize_claravy(AvKnowledge(taxonomy, alias))
+    return _sanitize_claravy(AvKnowledge(taxonomy, alias, set()))
 
 
-def save_claravy(knowledge: AvKnowledge, taxomony: str, alias: str):
+def save_claravy(knowledge: AvKnowledge, taxonomy: str, alias: str):
     """Saved ClarAVy knowledge to file.
 
     Args:
         knowledge: The knowledge to save to file.
-        taxomony: The ClarAVy taxomony destination path.
+        taxonomy: The ClarAVy taxonomy destination path.
         alias: The ClarAVy alias destination path.
     """
     _save_claravy_alias(alias, knowledge.aliases)
-    _save_claravy_taxonomy(taxomony, knowledge.taxonomy)
+    _save_claravy_taxonomy(taxonomy, knowledge.taxonomy)
 
 
 def _consolidate_group_alias(truth: Dict[str, Set[str]], auxiliary: Dict[str, Set[str]]) -> Dict[str, Set[str]]:
@@ -361,4 +353,4 @@ def consolidate_knowledge(truth: AvKnowledge, auxiliary: AvKnowledge) -> AvKnowl
         g: _consolidate_group_taxonomy(truth.taxonomy[g], auxiliary.taxonomy[g], alias[g]) for g in CLARAVY_TAGS
     }
 
-    return _sanitize_claravy(AvKnowledge(taxonomy, alias))
+    return _sanitize_claravy(AvKnowledge(taxonomy, alias, truth.pup_tags | auxiliary.pup_tags))
