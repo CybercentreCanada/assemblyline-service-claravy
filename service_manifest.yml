@@ -1,4 +1,4 @@
-name: Claravy
+name: ClarAVy
 version: $SERVICE_TAG
 description: This service consumes scan detection data from VirusTotal and AntiVirus service and extracts family, behavior, and platform information collected by [ClarAVy](https://github.com/FutureComputing4AI/ClarAVy).
 

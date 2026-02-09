@@ -43,7 +43,7 @@ General Assemblyline documentation can be found at: https://cybercentrecanada.gi
 
 # Service Claravy
 
-This service consumes Anti-Virus and Virus Total detections and extracts family, behavior, and platform information collected by [ClarAVy](https://github.com/FutureComputing4AI/ClarAVy).
+Ce service consomme les informations de detection d'anti-virus et de VirusTotal ainsi que les familles extraites, comportements, et information de plateforme collecté par [ClarAVy.](https://github.com/FutureComputing4AI/ClarAVy).
 
 ## Variantes et étiquettes d'image
 
