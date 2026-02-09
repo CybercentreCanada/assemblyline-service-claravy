@@ -26,6 +26,10 @@ class ClarAVyVerdict(NamedTuple):
     family: str
 
 
+class ClarAVyError(Exception):
+    pass
+
+
 CLARAVY_VERDICT = re.compile(r"^\s*([a-fA-F0-9]+)\s+([0-9]+)\/([0-9]+)\s+([^\r\n]+)$")
 CLARAVY_LABEL = re.compile(r"^([A-Z]+):([^|]+)\|([0-9]+\.?[0-9\.]*)\%?$")
 
@@ -35,10 +39,6 @@ AVS_PATH = f"{DATA_PATH}/avs.json"
 MODEL_PATH = f"{DATA_PATH}/confidence_model.pkl"
 IGNORE_PATH = f"{DATA_PATH}/ignore.txt"
 SUBSTR_PATH = f"{DATA_PATH}/substr.txt"
-
-
-class ClarAVyError(Exception):
-    pass
 
 
 def _parse_claravy_result(pup_tags: Set[str], file: str) -> Optional[ClarAVyVerdict]:
