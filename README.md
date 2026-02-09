@@ -6,7 +6,7 @@
 [![License](https://img.shields.io/github/license/CybercentreCanada/assemblyline-service-claravy)](./LICENSE)
 # Claravy Service
 
-This service consumes Anti-Virus tags (`av.virus_name`) and extracts family, behavior, and platform information collected by [ClarAVy](https://github.com/FutureComputing4AI/ClarAVy).
+This service consumes Anti-Virus and Virus Total detections and extracts family, behavior, and platform information collected by [ClarAVy](https://github.com/FutureComputing4AI/ClarAVy).
 
 ## Image variants and tags
 
@@ -40,3 +40,39 @@ To add this service to your Assemblyline deployment, follow this
 
 General Assemblyline documentation can be found at: https://cybercentrecanada.github.io/assemblyline4_docs/
 
+
+# Service Claravy
+
+This service consumes Anti-Virus and Virus Total detections and extracts family, behavior, and platform information collected by [ClarAVy](https://github.com/FutureComputing4AI/ClarAVy).
+
+## Variantes et étiquettes d'image
+
+Les services d'Assemblyline sont construits à partir de l'image de base [Assemblyline service](https://hub.docker.com/r/cccs/assemblyline-v4-service-base),
+qui est basée sur Debian 11 avec Python 3.11.
+
+Les services d'Assemblyline utilisent les définitions d'étiquettes suivantes:
+
+| **Type d'étiquette** | **Description**                                                                                                |  **Exemple d'étiquette**   |
+| :------------------: | :------------------------------------------------------------------------------------------------------------- | :------------------------: |
+|   dernière version   | La version la plus récente (peut être instable).                                                               |          `latest`          |
+|      build_type      | Type de construction utilisé. `dev` est la dernière version instable. `stable` est la dernière version stable. |     `stable` ou `dev`      |
+|        série         | Détails de construction complets, comprenant la version et le type de build: `version.buildType`.              | `4.5.stable`, `4.5.1.dev3` |
+
+## Exécution de ce service
+
+Ce service est spécialement optimisé pour fonctionner dans le cadre d'un déploiement d'Assemblyline.
+
+Si vous souhaitez tester ce service localement, vous pouvez exécuter l'image Docker directement à partir d'un terminal:
+
+    docker run \
+        --name Claravy \
+        --env SERVICE_API_HOST=http://`ip addr show docker0 | grep "inet " | awk '{print $2}' | cut -f1 -d"/"`:5003 \
+        --network=host \
+        cccs/assemblyline-service-claravy
+
+Pour ajouter ce service à votre déploiement d'Assemblyline, suivez ceci
+[guide](https://cybercentrecanada.github.io/assemblyline4_docs/fr/developer_manual/services/run_your_service/#add-the-container-to-your-deployment).
+
+## Documentation
+
+La documentation générale sur Assemblyline peut être consultée à l'adresse suivante: https://cybercentrecanada.github.io/assemblyline4_docs/
