@@ -10,14 +10,11 @@ import re
 import subprocess
 import sys
 import tempfile
-from collections import namedtuple
 from functools import reduce
 from itertools import groupby
-from pathlib import Path
 from typing import Any, AnyStr, Dict, Iterator, List, NamedTuple, Optional, Set
 
 import claravy.taxonomy as tax
-from assemblyline.common import forge
 from assemblyline_v4_service.common.base import ServiceBase
 from assemblyline_v4_service.common.request import ServiceRequest
 from assemblyline_v4_service.common.result import BODY_FORMAT, Heuristic, Result, ResultSection
@@ -30,6 +27,20 @@ from claravysvc.corpus import (
     load_pup_index,
     save_claravy,
 )
+
+
+class ClarAVyTag(NamedTuple):
+    name: str
+    path: str
+    category: str
+    rank: int
+
+
+class ClarAVyVerdit(NamedTuple):
+    tags: List[ClarAVyTag]
+    is_pup: bool
+    family: str
+
 
 CLARAVY_SECTION_ORDER = [
     tax.FAM,
@@ -45,6 +56,7 @@ CLARAVY_SECTION_ORDER = [
     tax.NULL,
 ]
 
+
 CLARAVY_TAG_CATEGORY = {
     tax.FAM: ("family", 1, "attribution.family"),
     tax.GRP: ("group", 2, "attribution.actor"),
@@ -59,24 +71,12 @@ CLARAVY_TAG_CATEGORY = {
     tax.NULL: ("null", None, None),
 }
 
+
 CLARAVY_VERDICT = re.compile(r"^\s*([a-fA-F0-9]+)\s+([0-9]+)\/([0-9]+)\s+([^\r\n]+)$")
 CLARAVY_LABEL = re.compile(r"^([A-Z]+):([^|]+)\|([0-9]+\.?[0-9\.]*)\%?$")
 
 
 DATA_PATH = os.path.realpath(os.path.join(os.path.dirname(__file__), "..", "data"))
-
-
-class ClarAVyTag(NamedTuple):
-    name: str
-    path: str
-    category: str
-    rank: int
-
-
-class ClarAVyVerdit(NamedTuple):
-    tags: List[ClarAVyTag]
-    is_pup: bool
-    family: str
 
 
 class ClaravySvc(ServiceBase):
@@ -239,7 +239,7 @@ class ClaravySvc(ServiceBase):
                     "-bl",
                     ClaravySvc.IGNORE_PATH,
                 ],
-                # capture_output=True,
+                capture_output=True,
                 text=True,
             )
 
@@ -324,6 +324,7 @@ class ClaravySvc(ServiceBase):
             body["family"] = common_name
 
             alt_names = knowledge.aliases[tax.FAM].get(common_name, [])
+            alt_names.sort()
 
             if alt_names:
                 body["aka"] = ", ".join(alt_names)
@@ -353,16 +354,6 @@ class ClaravySvc(ServiceBase):
 
         return section
 
-    def _get_alt_names(self, family: AnyStr, file_type: AnyStr, use_malpedia: bool) -> List:
-        # alt_names is an alphabetically sorted list of translated names and malpedia names
-        translation = self.base_data[0]._src_map
-        alt_names = [key.lower() for key, value in translation.items() if value == {family}]
-        malpedia_names = self.importer.get_alt_names(family, file_type, use_malpedia)
-        if malpedia_names:
-            alt_names = list(set(alt_names + malpedia_names))
-        alt_names.sort()
-        return alt_names
-
     @staticmethod
     def merge_scan_results(a: Dict[Any, str], b: Dict[Any, str]) -> Dict[Any, str]:
         if a:
@@ -377,7 +368,7 @@ class ClaravySvc(ServiceBase):
         result = Result()
         request.result = result
 
-        r = reduce(
+        raw_scan_data = reduce(
             ClaravySvc.merge_scan_results,
             [
                 i
@@ -389,7 +380,7 @@ class ClaravySvc(ServiceBase):
             {},
         )
 
-        if not r:
+        if not raw_scan_data:
             self.log.info("No scan detection data found in temp submission data. Skipping.")
             return
 
@@ -398,7 +389,7 @@ class ClaravySvc(ServiceBase):
         if request.get_param("include_malpedia_dataset"):
             knowledge = self.malpedia_knowledge
 
-        verdict = self._generate_verdict(r, knowledge)
+        verdict = self._generate_verdict(raw_scan_data, knowledge)
 
         if not verdict:
             return
