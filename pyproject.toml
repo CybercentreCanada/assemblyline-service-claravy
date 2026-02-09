@@ -12,21 +12,24 @@ dependencies = [
     "claravy @ git+https://github.com/CybercentreCanada/ClarAVy@7483e3a09aaa56886ee38debece11abbb7c9ec1b"
 ]
 
-[tool.hatch.version]
-source = "env"
-variable = "version"
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
 
-[tool.hatch.metadata]
-# Required for ClarAVy dependency, which is not indexed on PyPI
-allow-direct-references = true
+[tool.setuptools]
+include-package-data = true
 
-[tool.hatch.build.targets.wheel]
-packages = [
-    "claravysvc"
-]
+[tool.setuptools.package-data]
+"claravysvc_default" = ["./data"]
+
+[tool.setuptools.packages.find]
+include = ["claravysvc*"]
+
+[tool.setuptools.dynamic]
+version = {attr = "claravysvc.__version__"}
 
 [tool.cruft]
-skip = ["pkglist.txt", "README.md", "claravy", "tests"]
+skip = ["pkglist.txt", "README.md", "claravysvc", "tests"]
 
 [tool.ruff]
 line-length = 120
@@ -47,7 +50,3 @@ preview = true
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
-
-[build-system]
-requires = ["hatchling >= 1.26"]
-build-backend = "hatchling.build"
