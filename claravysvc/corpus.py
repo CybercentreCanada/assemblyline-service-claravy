@@ -1,4 +1,3 @@
-import itertools
 import json
 import re
 from copy import deepcopy
@@ -264,64 +263,57 @@ def _load_malpedia_taxonomy(malpedia_families: str, malpedia_actors: str):
 
 
 def load_pup_index(file: str) -> Set[str]:
+    """Loads a PUP index of tags.
+
+    Loads a new-line delimited index of PUP tags.
+
+    Args:
+        file: The file containing PUP tags.
+
+    Returns:
+        A set of PUP tags.
+    """
     with open(file, "r") as f:
         return [line.strip().lower() for line in f if line.strip()]
 
 
 def load_claravy(taxomony: str, alias: str) -> AvKnowledge:
+    """Loads ClarAVy taxonomy.
+
+    Args:
+        taxomony: The file containing ClarAVy taxonomy.
+        alias: The file containing ClarAVy alias.
+
+    Returns:
+        A knowledge object containing taxonomy and alias.
+    """
     return AvKnowledge(_load_claravy_taxonomy(taxomony), _load_claravy_alias(alias))
 
 
 def load_malpedia(families: str, actors: str) -> AvKnowledge:
+    """Loads Malpedia taxonomy.
+
+    Args:
+        families: Malpedia family index.
+        actors: Malpedia actor index.
+
+    Returns:
+        A knowledge object containing families and actors.
+    """
     taxonomy = _load_malpedia_taxonomy(families, actors)
     alias = _load_malpedia_alias(families, actors)
 
     return _sanitize_claravy(AvKnowledge(taxonomy, alias))
-    # ClarAVy requires that if a name if identified as a family it does not also get identified as a group.
-    # We give families presedence over token names
-    families = taxonomy[tax.FAM] | reduce(lambda a, b: a | b, alias[tax.FAM].values(), set())
-
-    # All common names that are identified as groups and families
-    collision_names = taxonomy[tax.GRP].intersection(families)
-
-    # Drop from taxonomy in each group where the terms are also aliases
-    for g in CLARAVY_TAGS:
-        group_alias = reduce(lambda a, b: a | b, alias[g].values(), set())
-        taxonomy[g].difference_update(group_alias)
-
-    # Drop from group taxonomy all terms that identify a family
-    taxonomy[tax.GRP].difference_update(collision_names)
-
-    # Patch over the alises to family for all groups we dropped due to a name collision
-    for c in collision_names:
-        if c not in alias[tax.GRP]:
-            continue
-
-        family_aliases = alias[tax.FAM].get(c, set()) | alias[tax.GRP][c]
-
-        alias[tax.FAM][c] = family_aliases
-        families |= family_aliases
-
-        alias[tax.GRP].pop(c)
-
-    # Drop group alises that intersect family names
-    for alises in alias[tax.GRP].values():
-        alises.difference_update(families)
-
-    # Malpedia will include alises in the common_name which can cause common_name to occur as both an alias and
-    # the taxonomy. ClarAVy does not support this, so we truncate alias values from the taxomony
-    for g, tokens in taxonomy.items():
-        group_alias = reduce(lambda a, b: a | b, alias[g].values(), set())
-
-        redundant = group_alias.intersection(tokens)
-
-        if redundant:
-            tokens.difference_update(redundant)
-
-    return AvKnowledge(taxonomy, alias)
 
 
 def save_claravy(knowledge: AvKnowledge, taxomony: str, alias: str):
+    """Saved ClarAVy knowledge to file.
+
+    Args:
+        knowledge: The knowledge to save to file.
+        taxomony: The ClarAVy taxomony destination path.
+        alias: The ClarAVy alias destination path.
+    """
     _save_claravy_alias(alias, knowledge.aliases)
     _save_claravy_taxonomy(taxomony, knowledge.taxonomy)
 
@@ -355,7 +347,15 @@ def _consolidate_group_taxonomy(truth: Set[str], auxiliary: Set[str], aliases: D
 
 
 def consolidate_knowledge(truth: AvKnowledge, auxiliary: AvKnowledge) -> AvKnowledge:
-    # return truth
+    """Consolidates two knowledges sources with presedence over a truth knowledge set.
+
+    Args:
+        truth: Truth knowledge set
+        auxiliary: Auxiliary knowledge set
+
+    Returns:
+        A knowledge set containing both the auxiliary and truth knowledge.
+    """
     alias = {g: _consolidate_group_alias(truth.aliases[g], auxiliary.aliases[g]) for g in CLARAVY_TAGS}
     taxonomy = {
         g: _consolidate_group_taxonomy(truth.taxonomy[g], auxiliary.taxonomy[g], alias[g]) for g in CLARAVY_TAGS
