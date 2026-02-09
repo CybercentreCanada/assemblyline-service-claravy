@@ -1,7 +1,6 @@
 import json
 import os
 import shutil
-from itertools import chain
 from pathlib import Path
 
 import pytest
@@ -38,7 +37,7 @@ def create_test_sample(md5, sha1, sha256):
         ),
         filename="dadc624d4454e10293dbd1b701b9ee9f99ef83b4cd07b695111d37eb95abcff8",
         min_classification="TLP:WHITE",
-        max_files=501,  # TODO: get the actual value
+        max_files=501,
         ttl=3600,
         safelist_config={"enabled": False, "hash_types": ["sha1", "sha256"], "enforce_safelist_service": False},
     )
@@ -78,7 +77,7 @@ def load_test_data():
 
         for i, scenario in enumerate(file_data):
             all_scenarios.append(scenario)
-            # Create an ID like "test_data.json-scenario-0"
+
             all_names.append(f"{path.stem}-index-{i}")
 
     return {"argvalues": all_scenarios, "ids": all_names}
