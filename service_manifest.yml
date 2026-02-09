@@ -59,7 +59,7 @@ dependencies:
     container:
       allow_internet_access: true
       command: ["python", "-m", "claravysvc.update_server"]
-      image: ${REGISTRY}cccs/assemblyline-service-avclass:$SERVICE_TAG
+      image: ${REGISTRY}cccs/assemblyline-service-claravy:$SERVICE_TAG
       ports: ["5003"]
       cpu_cores: 2
     run_as_core: True
