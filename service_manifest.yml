@@ -22,9 +22,12 @@ timeout: 60
 enabled: true
 
 uses_temp_submission_data: true
-monitored_keys:
-  - virus_scan_vt3_files
-  - virus_total_vt3_files
+
+submission_params:
+  - default: true
+    name: include_malpedia_dataset
+    type: bool
+    value: true
 
 heuristics:
   - heur_id: 1
