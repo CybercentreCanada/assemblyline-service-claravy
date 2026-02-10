@@ -1,4 +1,4 @@
-name: ClarAVy
+name: Claravy
 version: $SERVICE_TAG
 description: This service consumes scan detection data from VirusTotal and AntiVirus service and extracts family, behavior, and platform information collected by [ClarAVy](https://github.com/FutureComputing4AI/ClarAVy).
 
@@ -20,6 +20,11 @@ timeout: 60
 
 # is the service enabled by default
 enabled: true
+
+uses_temp_submission_data: true
+monitored_keys:
+  - virus_scan_vt3_files
+  - virus_total_vt3_files
 
 heuristics:
   - heur_id: 1
