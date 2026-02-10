@@ -15,6 +15,7 @@ from assemblyline_v4_service.common.result import Result
 from .al_reporter import generate_claravy_section
 from .claravy_client import ClarAVyError, generate_claravy_verdict
 from .corpus import AvKnowledge, consolidate_knowledge, load_claravy, load_malpedia
+from .report import unpackage_report
 
 DATA_PATH = os.path.realpath(os.path.join(os.path.dirname(__file__), "..", "data"))
 
@@ -104,16 +105,20 @@ class ClaravySvc(ServiceBase):
         result = Result()
         request.result = result
 
+        submission_data = {
+            k: unpackage_report(request.temp_submission_data.get(k, None))
+            for k in ClaravySvc.VT3_FILE_SOURCE_ATTR
+        }
+
         raw_scan_data = reduce(
             ClaravySvc.merge_scan_results,
             [
                 i
-                for k, items in request.temp_submission_data.items()
-                if k in ClaravySvc.VT3_FILE_SOURCE_ATTR
+                for k, items in submission_data.items()
                 for i in items
                 if i["attributes"]["sha256"].lower() == request.sha256.lower()
             ],
-            {},
+            {}
         )
 
         if not raw_scan_data:
