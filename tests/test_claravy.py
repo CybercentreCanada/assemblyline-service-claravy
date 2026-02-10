@@ -1,6 +1,11 @@
 import json
 import os
 import shutil
+
+import io
+import gzip
+import base64
+
 from pathlib import Path
 
 import pytest
@@ -18,6 +23,27 @@ SERVICE_CONFIG_PATH = os.path.join(ROOT_DIR, SERVICE_CONFIG_NAME)
 TEMP_SERVICE_CONFIG_PATH = os.path.join("/tmp", SERVICE_CONFIG_NAME)
 
 TEST_DATA = f"{TEST_DIR}/test_claravy"
+
+
+def _zip_text(text_input: str) -> str:
+    buf = io.BytesIO()
+
+    with gzip.GzipFile(fileobj=buf, mode='wb', compresslevel=9) as f:
+        f.write(text_input.encode('utf-8'))
+
+    compressed_bytes = buf.getvalue()
+    base64_encoded = base64.b64encode(compressed_bytes).decode('utf-8')
+
+    return base64_encoded
+
+def package_scan_report(vt3_results):
+    return _zip_text(
+            json.dumps([
+                f
+                for f in vt3_results
+            ]
+        )
+    )
 
 
 def create_test_sample(md5, sha1, sha256):
@@ -95,7 +121,15 @@ def test_execute_temp_submission_data(scenario, claravy_service):
     task = Task(service_task)
     task.get_param
     service_request = ServiceRequest(task)
-    service_request.temp_submission_data = scenario["input"]["temp_submission_data"]
+    service_request.temp_submission_data = {
+        "virus_total_vt3_files": package_scan_report(
+            scenario["input"]["temp_submission_data"]["virus_total_vt3_files"]
+        ),
+        "virus_scan_vt3_files": package_scan_report(
+            scenario["input"]["temp_submission_data"]["virus_scan_vt3_files"]
+        )
+    }
+
     claravy_service.execute(service_request)
 
     assert len(service_request.result.sections) == 1
