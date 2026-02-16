@@ -15,7 +15,7 @@
       "category": "Antivirus",
       "org_name_full": "CybercentreCanada",
       "org_name_short": "cccs",
-      "license": "apache2",
+      "license": "mit",
       "_template": "https://github.com/CybercentreCanada/assemblyline-service-template.git",
       "_commit": "d60482c86248bd5a7dde061ea2a430ac169076cd"
     }
