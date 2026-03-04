@@ -1,6 +1,6 @@
 name: Claravy
 version: $SERVICE_TAG
-description: This service consumes scan detection data from VirusTotal and AntiVirus service and extracts family, behavior, and platform information collected by [ClarAVy](https://github.com/FutureComputing4AI/ClarAVy).
+description: This service resolves malware family identities from various AV vendors into one using ClarAVy.
 
 # Regex defining the types of files the service accepts and rejects
 accepts: .*
