@@ -9,7 +9,7 @@
       "__repository": "assemblyline-service-claravy",
       "__pkg_name": "claravy",
       "class_name": "Claravy",
-      "short_description": "This service consumes Anti-Virus tags (`av.virus_name`) and extracts family, behavior, and platform information collected by [ClarAVy](https://github.com/FutureComputing4AI/ClarAVy).",
+      "short_description": "This service resolves malware family identities from various AV vendors into one using ClarAVy.",
       "short_description_fr": "",
       "stage": "POST",
       "category": "Antivirus",
