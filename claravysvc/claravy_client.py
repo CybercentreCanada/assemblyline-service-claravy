@@ -9,7 +9,6 @@ import os
 import pickle
 import random
 import re
-import subprocess
 import sys
 import tempfile
 from concurrent.futures import ProcessPoolExecutor
@@ -107,14 +106,6 @@ def _parse_claravy_result(pup_tags: Set[str], file: str) -> Optional[ClarAVyVerd
     return ClarAVyVerdict(tags, is_pup, family_name)
 
 
-def _initialize_claravy_model():
-    global _confidence_model
-
-    if not _confidence_model:
-        with open(MODEL_PATH, "rb") as f:
-            _confidence_model = pickle.load(f)
-
-
 def generate_claravy_verdict(file: Dict[str, Any], knowledge: AvKnowledge) -> Optional[ClarAVyVerdict]:
     """Invokes ClarAVy on the provided VT3 File Object with the provided Taxonomy index.
 
@@ -150,11 +141,20 @@ def generate_claravy_verdict(file: Dict[str, Any], knowledge: AvKnowledge) -> Op
             AVS_PATH,
             input_taxonomy,
             SUBSTR_PATH,
-            _confidence_model,
             IGNORE_PATH,
         )
 
         return _parse_claravy_result(knowledge.pup_tags, output_result)
+
+
+def _initialize_claravy_model():
+    global _confidence_model
+
+    if _confidence_model:
+        return
+
+    with open(MODEL_PATH, "rb") as f:
+        _confidence_model = pickle.load(f)
 
 
 def claravy_inference(
@@ -164,7 +164,6 @@ def claravy_inference(
     av_file,
     tax_file,
     substr_file,
-    confidence_model,
     ignore_file,
     *,
     beh_threshold=5,
@@ -176,6 +175,7 @@ def claravy_inference(
     batch_size=1000,
     num_processes=1,
 ):
+    _initialize_claravy_model()
 
     # Create AV parser
     vote_thresholds = {
@@ -398,7 +398,7 @@ def claravy_inference(
         X[scan_idx, 6] = pred_entropy
 
     # Get confidence scores
-    confidence_scores = confidence_model.predict_proba(X)
+    confidence_scores = _confidence_model.predict_proba(X)
 
     # Write SparseIBCC output
     with open(out_file, "w") as f:
