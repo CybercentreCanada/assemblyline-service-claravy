@@ -132,8 +132,6 @@ def generate_claravy_verdict(file: Dict[str, Any], knowledge: AvKnowledge) -> Op
 
         save_claravy(knowledge, input_taxonomy, input_alias)
 
-        _initialize_claravy_model()
-
         claravy_inference(
             [input_scan],
             output_result,
