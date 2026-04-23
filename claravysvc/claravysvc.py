@@ -13,7 +13,7 @@ from assemblyline_v4_service.common.request import ServiceRequest
 from assemblyline_v4_service.common.result import Result
 
 from .al_reporter import generate_claravy_section
-from .claravy_client import ClarAVyError, generate_claravy_verdict
+from .claravy_client import ClarAVyError, generate_claravy_verdict, initialize_claravy
 from .corpus import AvKnowledge, consolidate_knowledge, load_claravy, load_malpedia
 from .report import unpackage_report
 
@@ -28,6 +28,15 @@ class ClaravySvc(ServiceBase):
     """
 
     VT3_FILE_SOURCE_ATTR = ("virus_scan_vt3_files", "virus_total_vt3_files")
+
+    VT3_UNDETECTED_CATEGORY = {
+        "confirmed-timeout",
+        "timeout",
+        "failure",
+        "harmless",
+        "undetected",
+        "type-unsupported"
+    }
 
     ALIAS_PATH = f"{DATA_PATH}/aliases.txt"
     TAXONOMY_PATH = f"{DATA_PATH}/taxonomy.txt"
@@ -50,6 +59,8 @@ class ClaravySvc(ServiceBase):
         self.malpedia_knowledge = ClaravySvc.load_malpedia(
             self.base_knowledge, ClaravySvc.MAL_FAM_PATH, ClaravySvc.MAL_ACTOR_PATH
         )
+
+        initialize_claravy()
 
     @staticmethod
     def load_malpedia(auxiliary_knowledge: AvKnowledge, family: str, actor: str) -> AvKnowledge:
@@ -77,6 +88,18 @@ class ClaravySvc(ServiceBase):
 
         except Exception as e:
             self.log.error(f"Error updating malpedia knowledge base. Reason: {e}")
+
+    @staticmethod
+    def _is_undetected(result_index: Dict[str, Dict[str, Any]]):
+        av_results = result_index.get("attributes", {}).get("last_analysis_results")
+
+        if not av_results:
+            return True
+
+        return all([
+            x.get("category") in ClaravySvc.VT3_UNDETECTED_CATEGORY
+            for x in av_results.values()
+        ])
 
     @staticmethod
     def merge_scan_results(a: Dict[Any, str], b: Dict[Any, str]) -> Dict[Any, str]:
@@ -123,6 +146,10 @@ class ClaravySvc(ServiceBase):
 
         if not raw_scan_data:
             self.log.info("No scan detection data found in temp submission data. Skipping.")
+            return
+
+        # No meaningful labeling will happen if all AVs report clean.
+        if ClaravySvc._is_undetected(raw_scan_data):
             return
 
         knowledge = self.base_knowledge

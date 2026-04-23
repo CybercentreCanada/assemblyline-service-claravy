@@ -145,7 +145,7 @@ def generate_claravy_verdict(file: Dict[str, Any], knowledge: AvKnowledge) -> Op
         return _parse_claravy_result(knowledge.pup_tags, output_result)
 
 
-def _initialize_claravy_model():
+def initialize_claravy():
     global _confidence_model
 
     if _confidence_model:
@@ -153,6 +153,26 @@ def _initialize_claravy_model():
 
     with open(MODEL_PATH, "rb") as f:
         _confidence_model = pickle.load(f)
+
+    # Force warm-up of model so we don't pay the penalty when we actually need the service
+    X = np.zeros((5, 7), dtype=np.float64)
+    _confidence_model.predict_proba(X)
+
+    num_annotators = 5
+    num_labels = 5
+    W = np.ones(num_annotators, dtype=np.float64)
+    C = np.full((1, num_annotators), -1, dtype=np.int32)
+    C[0, 0] = 0
+
+    warm_up_ibcc = IBCC(
+        L=num_labels,
+        K=num_annotators,
+        W=W,
+        max_iter=2,
+        n_jobs=1,
+        verbose=False
+    )
+    warm_up_ibcc.fit_predict(C)
 
 
 def claravy_inference(
@@ -173,8 +193,6 @@ def claravy_inference(
     batch_size=1000,
     num_processes=1,
 ):
-    _initialize_claravy_model()
-
     # Create AV parser
     vote_thresholds = {
         tax.GRP: grp_threshold,
