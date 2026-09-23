@@ -2,7 +2,7 @@ ARG branch=latest
 ARG version=1.0.0.dev1
 
 # Prepare build image
-FROM cccs/assemblyline-v4-service-base:$branch AS build
+FROM cccs/assemblyline-rust-service-base:$branch AS build
 ARG version
 
 USER root
@@ -20,7 +20,7 @@ RUN pip wheel --no-build-isolation -w ./wheel-build .
 RUN cd ./wheel-build && rm assemblyline_service_claravysvc-*
 
 # Prepare runtime image
-FROM cccs/assemblyline-v4-service-base:$branch
+FROM cccs/assemblyline-rust-service-base:$branch
 ARG version
 
 # Python path to the service class from your service directory
