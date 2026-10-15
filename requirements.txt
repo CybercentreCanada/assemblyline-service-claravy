@@ -1,2 +1,3 @@
 assemblyline
 assemblyline-v4-service
+claravy @ git+https://github.com/CybercentreCanada/ClarAVy@7483e3a09aaa56886ee38debece11abbb7c9ec1b
