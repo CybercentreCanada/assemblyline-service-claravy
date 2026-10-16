@@ -1,27 +1,4 @@
-ARG branch=latest
-ARG version=1.0.0.dev1
-
-# Prepare build image
-FROM cccs/assemblyline-rust-service-base:$branch AS build
-ARG version
-
-USER root
-WORKDIR /app
-
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    build-essential libfuzzy-dev
-
-COPY . .
-
-# ssdeep imports setuptools in a way that doesn't work with build isolation.
-RUN pip install cython wheel six cffi pybind11
-RUN pip wheel --no-build-isolation -w ./wheel-build .
-RUN cd ./wheel-build && rm assemblyline_service_claravysvc-*
-
-# Prepare runtime image
 FROM cccs/assemblyline-rust-service-base:$branch
-ARG version
 
 # Python path to the service class from your service directory
 ENV SERVICE_PATH=claravysvc.claravysvc.ClaravySvc
@@ -48,12 +25,9 @@ RUN pip install \
 WORKDIR /opt/al_service
 COPY . .
 
-COPY --from=build /app/wheel-build ./wheel-build
-RUN pip install --no-cache-dir ./wheel-build/*.whl
-
 # Patch version in manifest
+ARG version=4.0.0.dev1
 USER root
 RUN sed -i -e "s/\$SERVICE_TAG/$version/g" service_manifest.yml
-RUN rm -rf ./wheel-build
 
 USER assemblyline
