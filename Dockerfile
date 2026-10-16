@@ -1,3 +1,4 @@
+ARG branch=latest
 FROM cccs/assemblyline-rust-service-base:$branch
 
 # Python path to the service class from your service directory
