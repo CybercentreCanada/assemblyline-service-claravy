@@ -1,2 +1,3 @@
 assemblyline
 assemblyline-v4-service
+claravy @ git+https://github.com/CybercentreCanada/ClarAVy@update-python-314
